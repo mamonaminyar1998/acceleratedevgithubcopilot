@@ -109,3 +109,9 @@ Library App is a console-based library management system implemented in C# using
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 ```
+## UI Sample
+A standalone responsive "Transformer Tabs" demo based on the provided markup/CSS/JS is available at:
+
+- `samples/transformer-tabs/index.html`
+
+Open the file in a browser to interact with tab switching behavior on desktop and mobile breakpoints.

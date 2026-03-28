@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Transformer Tabs</title>
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+
+      body {
+        margin: 0;
+        padding: 1rem;
+        background: #333;
+        color: #fff;
+        font: 100%/1.4 sans-serif;
+      }
+
+      .tabs > div {
+        display: none;
+        padding: 1rem;
+      }
+
+      .tabs > div:nth-of-type(1) {
+        background: #9b59b6;
+      }
+
+      .tabs > div:nth-of-type(2) {
+        background: #3498db;
+      }
+
+      .tabs > div:nth-of-type(3) {
+        background: #e67e22;
+      }
+
+      .tabs > div:nth-of-type(4) {
+        background: #c0392b;
+      }
+
+      .tabs > .active {
+        display: block;
+      }
+
+      .transformer-tabs ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        border-bottom: 3px solid #fff;
+      }
+
+      .transformer-tabs li {
+        display: inline-block;
+        vertical-align: bottom;
+      }
+
+      .transformer-tabs a {
+        display: inline-block;
+        color: #fff;
+        text-decoration: none;
+        padding: 0.5rem;
+      }
+
+      .transformer-tabs li:nth-child(1) a.active {
+        color: #c39bd3;
+        border-bottom-color: #9b59b6;
+      }
+
+      .transformer-tabs li:nth-child(2) a.active {
+        color: #85c1e9;
+        border-bottom-color: #3498db;
+      }
+
+      .transformer-tabs li:nth-child(3) a.active {
+        color: #f0b27a;
+        border-bottom-color: #e67e22;
+      }
+
+      .transformer-tabs li:nth-child(4) a.active {
+        color: #e6b0aa;
+        border-bottom-color: #c0392b;
+      }
+
+      .transformer-tabs a.active {
+        border-bottom: 3px solid transparent;
+        position: relative;
+        bottom: -3px;
+      }
+
+      @media (max-width: 700px) {
+        .transformer-tabs ul {
+          border-bottom: 0;
+          overflow: hidden;
+          position: relative;
+          background: linear-gradient(#666, #222);
+        }
+
+        .transformer-tabs ul::after {
+          content: "☰";
+          position: absolute;
+          top: 8px;
+          right: 15px;
+          z-index: 2;
+          pointer-events: none;
+        }
+
+        .transformer-tabs ul.open a {
+          position: relative;
+          display: block;
+        }
+
+        .transformer-tabs li {
+          display: block;
+        }
+
+        .transformer-tabs a {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+        }
+
+        .transformer-tabs a.active {
+          border: 0;
+          z-index: 1;
+          background: linear-gradient(#666, #222);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="tabs">
+      <nav role="navigation" class="transformer-tabs">
+        <ul>
+          <li><a href="#tab-1">Important Tab</a></li>
+          <li><a href="#tab-2" class="active">Smurfvision</a></li>
+          <li><a href="#tab-3">Monster Truck Rally</a></li>
+          <li><a href="https://google.com">Go To Google →</a></li>
+        </ul>
+      </nav>
+
+      <div id="tab-1">
+        <h2>Tab 1</h2>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad cum non iure magnam dolores earum nemo quo tempora ab unde!
+      </div>
+
+      <div id="tab-2" class="active">
+        <h2>Tab 2</h2>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur est natus esse minima nihil quidem tenetur alias pariatur.
+      </div>
+
+      <div id="tab-3">
+        <h2>Tab 3</h2>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maiores numquam cupiditate aliquam quisquam repellendus fugit eaque asperiores.
+      </div>
+
+      <div id="tab-4">
+        <h2>Tab 4</h2>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste officiis impedit ut culpa quaerat error pariatur voluptatum sapiente.
+      </div>
+    </div>
+
+    <script>
+      const Tabs = {
+        init() {
+          this.bindUIFunctions();
+          this.pageLoadCorrectTab();
+        },
+
+        bindUIFunctions() {
+          document.addEventListener("click", (event) => {
+            const link = event.target.closest(".transformer-tabs a");
+            if (!link) {
+              return;
+            }
+
+            const href = link.getAttribute("href") ?? "";
+            if (!href.startsWith("#")) {
+              return;
+            }
+
+            if (link.classList.contains("active")) {
+              this.toggleMobileMenu(link);
+              event.preventDefault();
+              return;
+            }
+
+            this.changeTab(href);
+            event.preventDefault();
+          });
+        },
+
+        changeTab(hash) {
+          if (!hash) {
+            return;
+          }
+
+          const anchor = document.querySelector(`.transformer-tabs a[href="${hash}"]`);
+          const panel = document.querySelector(hash);
+
+          if (!anchor || !panel) {
+            return;
+          }
+
+          anchor.classList.add("active");
+          anchor
+            .closest("li")
+            ?.parentElement?.querySelectorAll("a")
+            .forEach((tabLink) => {
+              if (tabLink !== anchor) {
+                tabLink.classList.remove("active");
+              }
+            });
+
+          panel.parentElement?.querySelectorAll(":scope > div").forEach((tabPanel) => {
+            tabPanel.classList.toggle("active", tabPanel === panel);
+          });
+
+          anchor.closest("ul")?.classList.remove("open");
+        },
+
+        pageLoadCorrectTab() {
+          if (window.location.hash) {
+            this.changeTab(window.location.hash);
+          }
+        },
+
+        toggleMobileMenu(linkElement) {
+          linkElement.closest("ul")?.classList.toggle("open");
+        }
+      };
+
+      Tabs.init();
+    </script>
+  </body>
+</html>
